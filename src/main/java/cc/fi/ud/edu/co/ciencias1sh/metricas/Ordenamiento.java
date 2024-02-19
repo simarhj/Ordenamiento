@@ -56,36 +56,42 @@ public class Ordenamiento {
     }
     
     public static Respuesta monticulos(Comparable arr[]){
-        treeHeap(0,arr.length,arr);
-        return null;
+        Respuesta res = new Respuesta(arr, 0, 0);
+        for(int i=arr.length/2-1; i>=0; i--){
+            treeHeap(i,arr.length,arr, res);
+        }
+        for (int i = arr.length-1; i >= 0; i--) {
+            intercambiar(0, i, arr);
+            treeHeap(0, i, arr, res);
+        }
+        
+        return res;
     }
     
-    public static void treeHeap(int pos, int tam,Comparable arr[]){
+    public static void treeHeap(int pos, int tam,Comparable arr[], Respuesta res){
+        res.setCiclos(res.getCiclos()+1);
         int hi = pos*2+1;
         int hd = pos*2+2;
-        if(hi<tam){
-            treeHeap(hi,tam,arr);
-            if(hd<tam){
-                treeHeap(hd,tam,arr);
-                if(arr[hi].compareTo(arr[pos])>0&&arr[hi].compareTo(arr[hd])>0){
-                    Comparable aux = arr[hi];
-                    arr[hi] = arr[pos];
-                    arr[pos] = aux;
-                }else{
-                    if(arr[hd].compareTo(arr[pos])>0&&arr[hd].compareTo(arr[hi])>0){
-                        Comparable aux = arr[hi];
-                        arr[hi] = arr[pos];
-                        arr[pos] = aux;
-                    }
-                }
-            }else{
-                if(arr[hi].compareTo(arr[pos])>0){
-                    Comparable aux = arr[hi];
-                    arr[hi] = arr[pos];
-                    arr[pos] = aux;
-                }
-            }
+        int mayor = pos;
+        if(hi<tam && arr[hi].compareTo(arr[mayor])>=0 ){
+            mayor = hi;
         }
+        if(hd<tam && arr[hd].compareTo(arr[mayor])>=0){
+            mayor = hd;
+        }
+        
+        if(mayor != pos){
+            Comparable aux = arr[mayor];
+            arr[mayor] = arr[pos];
+            arr[pos] = aux;
+            treeHeap(mayor, tam, arr, res);
+        }
+    }
+
+    private static void intercambiar(int i, int i0, Comparable[] arr) {
+        Comparable aux = arr[i];
+        arr[i] = arr[i0];
+        arr[i0] = aux;
     }
     
 }
